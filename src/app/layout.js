@@ -27,3 +27,68 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
+import Image from "next/image";
+import Link from "next/link";
+
+export default function Home() {
+  return (
+    <div>
+      <h1>Welcome to the Index Page</h1>
+      <Image src="/next.svg" alt="Next.js logo" width={180} height={38} />
+      <Link href="/login">
+        <button>Go to Login Page</button>
+      </Link>
+    </div>
+  );
+}
+
+import { signIn } from "next-auth/react";
+import { useState } from "react";
+
+export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const result = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
+    if (result?.error) {
+      alert("Login failed");
+    } else {
+      alert("Login successful");
+    }
+  };
+
+  return (
+    <div className="login-container">
+      <h1>Login</h1>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit">Login</button>
+      </form>
+      <button onClick={() => signIn("google")}>Login with Google</button>
+    </div>
+  );
+}
